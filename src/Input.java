@@ -29,12 +29,16 @@ public class Input {
                 if(!num[n].equals("?"))
                 {
                     inputs[i][n-1]=Integer.parseInt(num[n]);
+
+                }
+                else
+                {
+                    inputs[i][n-1]=0;
                     flag++;
                 }
-                else inputs[i][n-1]=0;
             }
             if(inputs[i][feacher]==2) inputs[i][feacher]=1;
-            else inputs[i][feacher]=0;
+            else if(inputs[i][feacher]==4)inputs[i][feacher]=0;
         }
         System.out.println(flag);
         return true;

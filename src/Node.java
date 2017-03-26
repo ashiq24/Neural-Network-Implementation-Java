@@ -11,7 +11,7 @@ public class Node {
     public Node(int n){
         this.weights = new double[n];
         Random r=new Random();
-        for( int i=0;i<weights.length;i++) weights[i]=r.nextDouble();
+        for( int i=0;i<weights.length;i++) weights[i]=0;//r.nextDouble();
     }
 }
 

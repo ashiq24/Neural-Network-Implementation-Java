@@ -20,7 +20,7 @@ public class NeuralNet {
         layers=l;
         input=new Input(f,s);
         net=new Node[l][f];
-        learning_rate=0.1;
+        learning_rate=1;
         for(int i=0;i<l;i++)
         {
             for( int j=0;j<f;j++) net[i][j]=new Node(f);
@@ -28,8 +28,8 @@ public class NeuralNet {
     }
     double nonlinear(double s)
     {
-        if(s>-90)return 1/(1+Math.exp(-1*s));
-        else return 1/10000000.01;
+        if(s>-90)return 1*1.0/(1+Math.exp(-1*s));
+        else return 1*1.0/10000000.01;
     }
     double activate(int i, int j)
     {
@@ -50,18 +50,18 @@ public class NeuralNet {
 
     void ForwordPropagate()
     {
-        Random r=new Random();
-        working_input=(int) r.nextDouble()*size;
+        /*Random r=new Random();
+        working_input=(int) r.nextDouble()*size;*/
         for( int i=0;i<layers;i++)
         {
             for( int j=0;j<feachers;j++)
             {
                 double s=activate(i,j);
                 net[i][j].S=s;
-                net[i][j].X=s;
-                if(i!=layers-1 || 1==1)net[i][j].X=nonlinear(s);
+                net[i][j].X=nonlinear(s);
             }
         }
+
     }
     /**here error calculation is a simple squared error. and as a non linearity sigmoid
      * function is used.
@@ -74,7 +74,7 @@ public class NeuralNet {
     double finalDelta(int layers)
     {
         int pos=layers-1;
-        net[pos][0].delta=2*(input.inputs[working_input][feachers]-net[pos][0].X)*derivativenonlinear(pos,0);
+        net[pos][0].delta=2*(-input.inputs[working_input][feachers]+net[pos][0].X)*derivativenonlinear(pos,0);
         return net[pos][0].delta;
     }
     void Backpropagate()
@@ -133,6 +133,7 @@ public class NeuralNet {
 
     void  teach(int times)
     {
+        working_input=0;
         while(times!=0)
         {
             ForwordPropagate();
@@ -140,6 +141,8 @@ public class NeuralNet {
             Backpropagate();
             Update();
             times--;
+            working_input++;
+            working_input=working_input%699;
         }
 
         System.out.println("TRAIN DONE ONCE\n");
@@ -152,7 +155,8 @@ public class NeuralNet {
         {
             working_input=n;
             ForwordPropagate();
-            if(Math.abs(net[layers-1][0].X-input.inputs[n][feachers])<=0.5)r++;
+            System.out.println(net[layers-1][0].X+" "+input.inputs[n][feachers]);
+            if(Math.abs(net[layers-1][0].X-input.inputs[n][feachers])<=0.59)r++;
             else w++;
         }
         System.out.println(r+" "+w);
@@ -161,15 +165,15 @@ public class NeuralNet {
 
     public static void main(String[] args) {
         Input input=new Input(9,699);
-        NeuralNet NN=new NeuralNet(3,9,699);
+        NeuralNet NN=new NeuralNet(4,9,699);
         NN.input=input;
         try {
             NN.input.takeinput();
         } catch (IOException e) {
-            System.out.println("PROBLM WITH INPUT ");
+            System.out.println("PROBLeM WITH INPUT ");
             e.printStackTrace();
         }
-        NN.teach(2000);
+        NN.teach(100000);
         System.out.println(NN.Error());
 
     }
